@@ -1,0 +1,21 @@
+# FastAPI and ASGI server
+fastapi
+uvicorn[standard]
+
+# PostgreSQL driver
+psycopg2-binary
+
+# LangChain and Hugging Face ecosystem
+langchain>=0.1.17         # Ensure you're on the newer version with Runnable support
+langchain-huggingface     # Interface for Hugging Face pipelines
+transformers>=4.36.0       # Ensure compatibility with newer models and Hugging Face changes
+torch                      # Required for running LLMs locally
+huggingface_hub            # For loading models from Hugging Face
+
+# Environment variable management
+python-dotenv
+
+# Database ORM
+SQLAlchemy>=2.0            # You had `SQLAlchemy .` which is invalid
+
+alembic  # for database migrations

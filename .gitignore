@@ -1,0 +1,55 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Environment variables and secrets
+.env
+*.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python packaging
+*.egg
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+
+# Jupyter notebooks checkpoints (if any)
+.ipynb_checkpoints/
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Ignore Docker Compose override files (if you use them)
+docker-compose.override.yml
+
+# VS Code and IDEs
+.vscode/
+.idea/
+
+# MyPy, Ruff, Pytest, coverage, etc.
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
+.tox/
+.nox/
+
+# Frontend (Streamlit) build artifacts if you generate any
+frontend/__pycache__/
+backend/__pycache__/

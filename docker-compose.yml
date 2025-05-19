@@ -1,0 +1,61 @@
+#version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    volumes:
+      - huggingface_cache:/root/.cache/huggingface
+      - ./backend:/app/backend
+    environment:
+      - HUGGINGFACE_HUB_TOKEN=${HUGGINGFACE_HUB_TOKEN}
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    volumes:
+      - ./frontend:/app/frontend
+    environment:
+      - STREAMLIT_SERVER_ADDRESS=${STREAMLIT_SERVER_ADDRESS}
+      - STREAMLIT_SERVER_PORT=${STREAMLIT_SERVER_PORT}
+      - STREAMLIT_BROWSER_SERVER_ADDRESS=${STREAMLIT_BROWSER_SERVER_ADDRESS}
+      - STREAMLIT_BROWSER_SERVER_PORT=${STREAMLIT_BROWSER_SERVER_PORT}
+      - BACKEND_URL=${BACKEND_URL}
+
+#  postgres:
+#    image: postgres:15
+#    environment:
+#      POSTGRES_USER: ${POSTGRES_USER}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#      POSTGRES_DB: ${POSTGRES_DB}
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#    networks:
+#      - app-network
+#    ports:
+#      - "5432:5432"
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 5
+
+volumes:
+  huggingface_cache:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
