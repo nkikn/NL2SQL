@@ -8,26 +8,32 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
+import time
+from sqlalchemy.exc import OperationalError
 
-Base = declarative_base()
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Read from environment
-DB_USER = os.getenv("POSTGRES_USER")
-DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-DB_HOST = os.getenv("POSTGRES_HOST")
-DB_PORT = os.getenv("POSTGRES_PORT")
-DB_NAME = os.getenv("POSTGRES_DB")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Construct the database URL
-DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# for _ in range(10):
+#     try:
+#         engine = create_engine(DATABASE_URL)
+#         conn = engine.connect()
+#         conn.close()
+#         break
+#     except OperationalError:
+#         print("Database not ready, retrying in 3 seconds...")
+#         time.sleep(3)
+# else:
+#     raise Exception("Database connection failed after retries")
 
 # Create engine and session
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+Base = declarative_base()
 
 # Dependency to use with FastAPI
 def get_db():

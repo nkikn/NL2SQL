@@ -12,19 +12,31 @@ import time
 from functools import lru_cache
 
 from sqlalchemy import text
-from backend.db.database import get_db
+from backend.db.database import SessionLocal
 
-def execute_sql_query(db: Session, sql: str):
-    try:
-        result = db.execute(text(sql)).fetchall()
-        return [dict(row._mapping) for row in result]
-    except Exception as e:
-        raise ValueError(f"SQL execution error: {str(e)}")
+
+# def execute_sql_query(sql: str):
+#     db = SessionLocal()
+#     try:
+#         result = db.execute(text(sql))
+#         rows = result.fetchall()
+#         columns = result.keys()
+#         return [dict(zip(columns, row)) for row in rows]
+#     finally:
+#         db.close()
+
+def execute_sql_query(sql: str, db: Session):
+    result = db.execute(text(sql))
+    rows = result.fetchall()
+    columns = result.keys()
+    return [dict(zip(columns, row)) for row in rows]
+
 
 def generate_and_execute_sql(schema: str, question: str, db: Session):
     sql = generate_sql(schema, question)
     cleaned_sql = extract_sql_block(sql)
-    results = execute_sql_query(db, cleaned_sql)
+    # results = execute_sql_query(db, cleaned_sql)
+    results = execute_sql_query(sql=cleaned_sql, db=db)
     return {
         "sql": cleaned_sql,
         "results": results

@@ -19,3 +19,5 @@ python-dotenv
 SQLAlchemy>=2.0            # You had `SQLAlchemy .` which is invalid
 
 alembic  # for database migrations
+databases[postgresql]
+

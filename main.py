@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api import sql
 
+from backend.db.database import Base, engine
+from backend.services.sample_data import insert_sample_data
+
 app = FastAPI()
 
 # CORS (for Streamlit communication)
@@ -15,3 +18,12 @@ app.add_middleware(
 
 # Register routers
 app.include_router(sql.router)
+
+Base.metadata.create_all(bind=engine)
+
+insert_sample_data()
+
+@app.get("/")
+def read_root():
+    return {"message": "Backend is running!"}
+

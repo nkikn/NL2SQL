@@ -7,3 +7,7 @@ class SQLRequest(BaseModel):
 
 class SQLResponse(BaseModel):
     sql: str
+
+class NaturalLanguageQuery(BaseModel):
+    db_schema: str
+    question: str
