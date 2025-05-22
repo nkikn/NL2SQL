@@ -27,10 +27,8 @@ def insert_sample_data():
             Customer(id=25, name="Jordi Masip", email="masip@example.com", age=26),
         ]
         for cust_data in customers:
-            # Check if this customer exists by unique key (e.g. id or email)
             existing = db.query(Customer).filter(Customer.id == cust_data.id).first()
             if not existing:
-                # customer = Customer(**cust_data)
                 db.add(cust_data)
         db.commit()
     finally:

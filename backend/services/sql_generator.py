@@ -6,24 +6,10 @@ from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
 import torch
 import os
 import re
-from huggingface_hub import login
-from langchain_core.runnables import RunnableSequence
 import time
 from functools import lru_cache
-
 from sqlalchemy import text
 from backend.db.database import SessionLocal
-
-
-# def execute_sql_query(sql: str):
-#     db = SessionLocal()
-#     try:
-#         result = db.execute(text(sql))
-#         rows = result.fetchall()
-#         columns = result.keys()
-#         return [dict(zip(columns, row)) for row in rows]
-#     finally:
-#         db.close()
 
 def execute_sql_query(sql: str, db: Session):
     result = db.execute(text(sql))
@@ -35,12 +21,12 @@ def execute_sql_query(sql: str, db: Session):
 def generate_and_execute_sql(schema: str, question: str, db: Session):
     sql = generate_sql(schema, question)
     cleaned_sql = extract_sql_block(sql)
-    # results = execute_sql_query(db, cleaned_sql)
     results = execute_sql_query(sql=cleaned_sql, db=db)
     return {
         "sql": cleaned_sql,
         "results": results
     }
+
 
 def load_gemma_llm():
     model_id = os.getenv("MODEL_ID", "google/gemma-3-1b-it")  # fallback default
@@ -74,9 +60,11 @@ def load_gemma_llm():
 
     return HuggingFacePipeline(pipeline=text_gen_pipeline)
 
+
 @lru_cache(maxsize=1)
 def load_gemma_llm_cached():
     return load_gemma_llm()
+
 
 def get_sql_chain():
     llm = load_gemma_llm_cached()
@@ -88,6 +76,7 @@ def get_sql_chain():
         ),
     )
     return prompt | llm  # This is the new recommended syntax
+
 
 def generate_sql(schema: str, question: str) -> str:
     chain = get_sql_chain()

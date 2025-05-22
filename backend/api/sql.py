@@ -13,15 +13,6 @@ from backend.models.pydantic import NaturalLanguageQuery
 
 router = APIRouter()
 
-# @router.post("/query")
-# def query_db(natural_language: str):
-#     sql = generate_sql(natural_language)
-#     try:
-#         rows = execute_sql_query(sql)
-#         return {"sql": sql, "result": rows}
-#     except Exception as e:
-#         raise HTTPException(status_code=400, detail=str(e))
-
 @router.post("/query")
 def query_db(request: NaturalLanguageQuery, db: Session = Depends(get_db)):
     print("Received request:", request)
@@ -36,7 +27,6 @@ def query_db(request: NaturalLanguageQuery, db: Session = Depends(get_db)):
     except Exception as e:
         print("SQL execution error:", str(e))
         raise HTTPException(status_code=400, detail=str(e))
-
 
 @router.post("/generate-sql", response_model=SQLResponse)
 def generate_sql_only(request: SQLRequest):
@@ -54,22 +44,3 @@ def check(db: Session = Depends(get_db)):
         return {"status": "ok"}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
-
-# @router.post("/generate-and-run")
-# def generate_and_run_sql(request: SQLRequest, db: Session = Depends(get_db)):
-#     """Generate SQL from question and run it on the database."""
-#     full_response = generate_sql(request.db_schema, request.question)
-#     sql = extract_sql_block(full_response)
-#
-#     try:
-#         result = db.execute(text(sql)).fetchall()
-#         return {
-#             "sql": sql,
-#             "result": [dict(row._mapping) for row in result]
-#         }
-#     except Exception as e:
-#         return {
-#             "sql": sql,
-#             "error": str(e)
-#         }
-

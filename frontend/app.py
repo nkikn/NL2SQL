@@ -9,16 +9,11 @@ load_dotenv()
 # Use BACKEND_URL from .env
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
-
 st.set_page_config(page_title="NL to SQL Chat", page_icon="🧠")
 st.title("🧠 Natural Language to SQL Chat")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
-
-# Optional: input schema
-# with st.expander("🔧 Database Schema", expanded=True):
-#     schema = st.text_area("Paste your database schema here:", height=150, value="users(id INT, name TEXT, email TEXT)")
 
 # Display existing chat history
 for msg in st.session_state.messages:
@@ -45,7 +40,6 @@ if prompt:
                     timeout=1000
                 )
                 response.raise_for_status()
-                # sql = response.json().get("sql", "❌ No SQL returned.")
 
                 data = response.json()
                 results = data.get("result", [])
@@ -60,7 +54,7 @@ if prompt:
                         if len(values) == 1:
                             flat_results.append(str(values[0]))
                         else:
-                            flat_results.append(", ".join(str(v) for v in values))
+                            flat_results.append(" - ".join(str(v) for v in values))
 
                     # Join into a single string
                     message = ", ".join(flat_results)
@@ -70,8 +64,3 @@ if prompt:
 
             st.markdown(message)
             st.session_state.messages.append({"role": "assistant", "content": message})
-
-            # except Exception as e:
-            #     sql = f"❌ Error: {str(e)}"
-            # st.markdown(f"```sql\n{sql}\n```")
-            # st.session_state.messages.append({"role": "assistant", "content": f"```sql\n{sql}\n```"})

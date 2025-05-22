@@ -22,8 +22,3 @@ app.include_router(sql.router)
 Base.metadata.create_all(bind=engine)
 
 insert_sample_data()
-
-@app.get("/")
-def read_root():
-    return {"message": "Backend is running!"}
-
